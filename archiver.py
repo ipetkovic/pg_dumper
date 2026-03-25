@@ -33,6 +33,8 @@ class PostgresArchiver(DatabaseArchiver):
                 "pg_restore",
                 "--clean",
                 "--if-exists",
+                "--no-owner",
+                "--no-privileges",
                 "--single-transaction",
                 "-d",
                 self._db_url,
