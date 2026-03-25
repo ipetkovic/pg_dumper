@@ -8,6 +8,7 @@ import sys
 import tempfile
 import time
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 from archiver import PostgresArchiver
 from storage import S3Storage
@@ -101,7 +102,7 @@ def main():
     print("Starting backup process 3...")
 
     if args.name == "default":
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(ZoneInfo("Europe/Zagreb")).strftime("%Y-%m-%d_%H-%M-%S")
         dump_name = f"meliori_{timestamp}.dump"
     else:
         dump_name = f"{args.name}.dump"
