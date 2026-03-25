@@ -28,6 +28,6 @@ jobs:
         run: |
           python backup_db.py \
             --db-url "${{ secrets.NEON_DATABASE_URL }}" \
-            --s3-endpoint "${{ secrets.S3_ENDPOINT }}" \
+            --s3-endpoint "${{ vars.S3_ENDPOINT }}" \
             --s3-bucket meliori \
             --keep 7
