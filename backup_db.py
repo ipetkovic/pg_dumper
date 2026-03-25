@@ -51,9 +51,11 @@ def check_prerequisites():
     if not shutil.which("pg_dump"):
         sys.exit("Error: pg_dump not found on PATH. Install PostgreSQL client tools.")
 
-    missing = [v for v in ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY") if not os.environ.get(v)]
+    missing = [v for v in ("AWS_ACCESS_KEY_ID",
+                           "AWS_SECRET_ACCESS_KEY") if not os.environ.get(v)]
     if missing:
-        sys.exit(f"Error: missing environment variable(s): {', '.join(missing)}")
+        sys.exit(
+            f"Error: missing environment variable(s): {', '.join(missing)}")
 
 
 def cleanup_old_dumps(storage: S3Storage, prefix: str, keep_days: int) -> int:
@@ -75,18 +77,22 @@ def cleanup_old_dumps(storage: S3Storage, prefix: str, keep_days: int) -> int:
     # Delete in batches of 1000 (S3 limit)
     deleted = 0
     for i in range(0, len(to_delete), 1000):
-        batch = to_delete[i : i + 1000]
-        storage._client.delete_objects(Bucket=storage._bucket, Delete={"Objects": batch})
+        batch = to_delete[i: i + 1000]
+        storage._client.delete_objects(
+            Bucket=storage._bucket, Delete={"Objects": batch})
         deleted += len(batch)
     return deleted
 
 
 def main():
+    print("Starting backup process...")
     args = parse_args()
     check_prerequisites()
 
     storage = S3Storage(args.s3_endpoint, args.s3_bucket)
     archiver = PostgresArchiver(args.db_url)
+
+    print("Starting backup process 2...")
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     dump_name = f"meliori_{timestamp}.dump"
