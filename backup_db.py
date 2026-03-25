@@ -90,9 +90,10 @@ def main():
     check_prerequisites()
 
     storage = S3Storage(args.s3_endpoint, args.s3_bucket)
+    print("Starting backup process 2...")
     archiver = PostgresArchiver(args.db_url)
 
-    print("Starting backup process 2...")
+    print("Starting backup process 3...")
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     dump_name = f"meliori_{timestamp}.dump"
