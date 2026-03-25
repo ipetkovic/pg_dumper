@@ -36,6 +36,7 @@ class PostgresArchiver(DatabaseArchiver):
                 "--no-owner",
                 "--no-privileges",
                 "--single-transaction",
+                "--verbose",
                 "-d",
                 self._db_url,
                 dump_path,
@@ -43,5 +44,7 @@ class PostgresArchiver(DatabaseArchiver):
             capture_output=True,
             text=True,
         )
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
         if result.returncode != 0:
-            sys.exit(f"pg_restore failed (exit {result.returncode}):\n{result.stderr}")
+            sys.exit(f"pg_restore failed (exit {result.returncode})")
