@@ -38,6 +38,11 @@ def parse_args():
         help="Key prefix inside the bucket (default: backups/)",
     )
     parser.add_argument(
+        "--name",
+        default="default",
+        help="Backup name. 'default' uses meliori_{timestamp}. Otherwise uses the provided name directly.",
+    )
+    parser.add_argument(
         "--keep",
         type=int,
         default=None,
@@ -95,8 +100,11 @@ def main():
 
     print("Starting backup process 3...")
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    dump_name = f"meliori_{timestamp}.dump"
+    if args.name == "default":
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        dump_name = f"meliori_{timestamp}.dump"
+    else:
+        dump_name = f"{args.name}.dump"
 
     with tempfile.TemporaryDirectory() as tmpdir:
         dump_path = os.path.join(tmpdir, dump_name)

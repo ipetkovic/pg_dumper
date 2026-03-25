@@ -3,7 +3,12 @@ name: Backup Neon DB
 on:
   schedule:
     - cron: "0 3 * * *"      # daily at 3 AM UTC
-  workflow_dispatch:           # manual trigger
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Backup name ('default' for meliori_timestamp)"
+        required: false
+        default: "default"
 
 jobs:
   backup:
@@ -24,4 +29,5 @@ jobs:
             --db-url "${{ secrets.NEON_DATABASE_URL }}" \
             --s3-endpoint "${{ vars.S3_ENDPOINT }}" \
             --s3-bucket meliori \
+            --name "${{ github.event.inputs.name || 'default' }}" \
             --keep 7
