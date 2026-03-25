@@ -1,0 +1,29 @@
+name: Restore Neon DB
+
+on:
+  workflow_dispatch:
+    inputs:
+      dump_name:
+        description: "Dump file name to restore (e.g. meliori_20260325_030000.dump)"
+        required: true
+
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: pip install boto3
+
+      - name: Run restore
+        env:
+          PYTHONUNBUFFERED: 1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          python restore_db.py \
+            --db-url "${{ secrets.NEON_DATABASE_URL }}" \
+            --s3-endpoint "${{ vars.S3_ENDPOINT }}" \
+            --s3-bucket meliori \
+            --dump-name "${{ github.event.inputs.dump_name }}"
